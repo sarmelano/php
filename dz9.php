@@ -8,7 +8,7 @@ function generateAr(int $length, int $min, int $max): array {
     return $array;
 }
 
-function getInput(string $prompt): int {
+function getInput(string $prompt): string {
     echo $prompt;
     $input = trim(fgets(STDIN));
     while (!ctype_digit($input) || $input === "0") {
