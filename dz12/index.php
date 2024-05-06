@@ -2,6 +2,9 @@
 
 require_once 'BankAccount.php';
 
+/**
+ * @throws Exception
+ */
 function terminalStart(): void {
 
     $account = new BankAccount("1234567890123456", 1000);

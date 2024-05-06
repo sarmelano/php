@@ -1,19 +1,35 @@
 <?php
 
 class BankAccount {
-    private $accountNumber;
-    private $balance;
+    private string $accountNumber;
+    private float $balance;
 
-    public function __construct($accountNumber, $initialBalance = 0) {
+    /**
+     * @throws Exception
+     */
+    public function __construct(string $accountNumber, float $initialBalance = 0) {
         $this->setAccountNumber($accountNumber);
-        $this->balance = $initialBalance;
+        $this->setBalance($initialBalance);
     }
 
-    private function setAccountNumber($accountNumber): void {
+    /**
+     * @throws Exception
+     */
+    private function setAccountNumber(string $accountNumber): void {
         if (!ctype_digit($accountNumber) || strlen($accountNumber) != 16) {
             throw new Exception("Номер счета должен быть числом и содержать ровно 16 цифр.");
         }
         $this->accountNumber = $accountNumber;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function setBalance(float $balance): void {
+        if ($balance < 0) {
+            throw new Exception("Баланс не может быть отрицательным.");
+        }
+        $this->balance = $balance;
     }
 
     public function getAccountNumber(): string {
@@ -24,27 +40,34 @@ class BankAccount {
         return $this->balance;
     }
 
-    // Универсальный метод для изменения баланса
-    private function updateBalance($amount, $isDeposit): void {
+    /**
+     * @throws Exception
+     */
+    private function updateBalance(float $amount, bool $isDeposit): void {
         if ($amount <= 0) {
             throw new Exception("Сумма операции должна быть больше нуля.");
         }
         if (!$isDeposit && $this->balance < $amount) {
             throw new Exception("Недостаточно средств на счёте.");
         }
-        $this->balance += $isDeposit ? $amount : -$amount;
+        $newBalance = $isDeposit ? $this->balance + $amount : $this->balance - $amount;
+        $this->setBalance($newBalance);
     }
 
-    public function deposit($amount): void {
+    /**
+     * @throws Exception
+     */
+    public function deposit(float $amount): void {
         $this->updateBalance($amount, true);
     }
 
-    public function withdraw($amount): void {
+    /**
+     * @throws Exception
+     */
+    public function withdraw(float $amount): void {
         $this->updateBalance($amount, false);
     }
 }
-
-
 /*
  Конструктор — это специальный метод, который автоматически вызывается при создании нового объекта класса.
  В нашем случае конструктор принимает три параметра: имя, электронную почту и возраст пользователя.
