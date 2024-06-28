@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS `users`
+(
+    `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    `name` CHAR(100) NOT NULL,
+    `email` CHAR(255) UNIQUE NOT NULL,
+    `age` TINYINT UNSIGNED DEFAULT NULL,
+    `gender` ENUM('male', 'female', 'another'),
+    `password` CHAR(255) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted_at` TIMESTAMP DEFAULT NULL
+) ENGINE=InnoDB CHARACTER SET utf8mb4;
+/*=============================================*/
+CREATE TABLE IF NOT EXISTS `user_token`
+(
+    `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    `user_id` INT UNSIGNED,
+    `token` CHAR(100) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+    FOREIGN KEY(user_id) REFERENCES `users`(id)
+) ENGINE=InnoDB CHARACTER SET utf8mb4;

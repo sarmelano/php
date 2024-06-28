@@ -1,28 +1,54 @@
 <?php
 
-// Запрос имени у пользователя
-echo "Hello World! What's your name Creator?\n";
-$userName = trim(fgets(STDIN));
+setcookie('test', 'test value', time() + 3600);
+session_start();
 
-// Запрос текущего года
-echo "$userName, sir, welcome to my world. May I know what year is it now?\n";
-$currentYear = trim(fgets(STDIN));
+define('APP_DIR', __DIR__ . '/');
+define('CONTROLLERS_DIR', APP_DIR . 'controllers/');
+define('VIEWS_DIR', APP_DIR . 'views/');
+define('DB_DRIVER', 'mysql');
+define('DB_HOST', 'mysql');
+define('DB_PORT', '3306');
+define('DB_USER', 'root');
+define('DB_PASSWORD', 'root');
+define('DB_NAME', 'hillel');
 
-// Запрос года рождения пользователя
-echo "What year you were born, $userName?\n";
-$birthYear = trim(fgets(STDIN));
+$requiredFiles = [
+    'system/Request.php',
+    'system/Router.php',
+    'system/View.php',
+    'system/Functions.php',
+    'system/Validator.php',
+    'system/Session.php',
+    'system/Response.php',
+    'system/Config.php',
+    'database/Connect.php',
+    'system/Auth.php'
+];
 
-// Вычисление возраста пользователя
-$userAge = $currentYear - $birthYear;
+foreach ($requiredFiles as $file) {
+    require_once APP_DIR . $file;
+}
 
-// Вывод возраста пользователя
-echo "So you are just $userAge years old!\n";
 
-// Установка возраста создателя
-$creatorAge = 96;
+$router = new Router();
 
-// Вычисление года, когда создатель был на $creatorAge лет старше
-$createYear = intval($birthYear) + $creatorAge;
+$router->addRoute('/', [  //breadcrumbs
+    'get' => 'HomeController@index',
+]);
 
-// Вывод информации о годе создания
-echo "You created me when you were $creatorAge years old. So it happened in $createYear\n";
+$router->addRoute('/register', [  //breadcrumbs
+    'get' => 'AuthController@register',
+    'post' => 'AuthController@registerProcess',
+]);
+
+$router->addRoute('/login', [   //breadcrumbs
+    'get' => 'AuthController@login',
+    'post' => 'AuthController@auth',
+]);
+
+$router->addRoute('/signOut', [   //breadcrumbs
+    'get' => 'AuthController@signOut',
+]);
+
+$router->processRoute(Request::getUrl(), Request::getMethod());
